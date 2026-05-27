@@ -2,6 +2,8 @@ package service;
 
 import model.*;
 
+import java.time.LocalDate;
+
 /**
  * Klasa odpowiadajaca za logike biznesowa systemu bibliotycznego
  */

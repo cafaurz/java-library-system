@@ -3,6 +3,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.LibraryService;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LibraryServiceTest {
@@ -59,5 +61,29 @@ public class LibraryServiceTest {
         assertEquals(1,data.getBooks().size());
         assertEquals("Java. Podstawy",data.getBooks().get(0).getTitle());
     }
+    @Test
+    void shouldAddDepartment(){
+        service.addDepartment(department);
+
+        assertEquals(1,data.getDepartments().size());
+        assertEquals("IT",data.getDepartments().get(0).getCode());
+    }
+
+    @Test
+    void shoudlAddShelf(){
+        service.addShelf(shelf);
+
+        assertEquals(1,data.getShelves().size());
+        assertEquals("A",data.getShelves().get(0).getRack());
+    }
+
+    @Test
+    void shoudlAddReader(){
+        service.addReader(reader);
+
+        assertEquals(1,data.getReaders().size());
+        assertEquals("Anna",data.getReaders().get(0).getFirstName());
+    }
+
 
 }
