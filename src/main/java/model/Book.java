@@ -73,7 +73,7 @@ public class Book {
         this.year = year;
     }
 
-    public String getIsnn() {
+    public String getIsbn() {
         return isbn;
     }
 

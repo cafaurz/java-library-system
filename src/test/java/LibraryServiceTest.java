@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import service.LibraryService;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,5 +86,76 @@ public class LibraryServiceTest {
         assertEquals("Anna",data.getReaders().get(0).getFirstName());
     }
 
+    @Test
+    void shouldBorrowAvailableBook(){
+        service.addBook(book);
+        service.addReader(reader);
+
+        Loan loan = service.borrowBook(book,reader,LocalDate.now().plusDays(14));
+
+        assertNotNull(loan);
+        assertEquals(1,data.getLoans().size());
+        assertFalse(service.isBookAvailable(book));
+    }
+
+    @Test
+    void shouldNotBorrowAlreadyBorrowedBook(){
+        service.addBook(book);
+        service.addReader(reader);
+
+        service.borrowBook(book,reader,LocalDate.now().plusDays(14));
+
+        assertThrows(
+                IllegalStateException.class,
+                ()->service.borrowBook(book,reader,LocalDate.now().plusDays(14))
+        );
+    }
+
+    @Test
+    void shouldReturnBorrowedBook(){
+        service.addBook(book);
+        service.addReader(reader);
+
+        Loan loan = service.borrowBook(book,reader,LocalDate.now().plusDays(14));
+
+        service.returnBook(loan);
+
+        assertTrue(service.isBookAvailable(book));
+        assertNotNull(loan.getReturnDate());
+    }
+
+    @Test
+    void shouldNotReturnAlreadyReturnedBook(){
+        service.addBook(book);
+        service.addReader(reader);
+
+        Loan loan = service.borrowBook(book, reader, LocalDate.now().plusDays(14));
+        service.returnBook(loan);
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.returnBook(loan)
+        );
+
+    }
+    @Test
+    void shouldSearchBooksByTitle(){
+        service.addBook(book);
+        List<Book> results = service.searchBooks("java");
+
+        assertEquals(1,results.size());
+        assertEquals(book,results.get(0));
+    }
+    @Test
+    void shouldFindOverdueLoans() {
+        service.addBook(book);
+        service.addReader(reader);
+
+        service.borrowBook(book, reader, LocalDate.now().minusDays(1));
+
+        List<Loan> overdueLoans = service.findOverdueLoans();
+
+        assertEquals(1, overdueLoans.size());
+    }
 
 }
