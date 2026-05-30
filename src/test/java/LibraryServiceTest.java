@@ -157,5 +157,46 @@ public class LibraryServiceTest {
 
         assertEquals(1, overdueLoans.size());
     }
+    @Test
+    void shouldDeleteShelfWhenNoBooksAssigned() {
+        service.addShelf(shelf);
+
+        service.deleteShelf(shelf);
+
+        assertEquals(0, data.getShelves().size());
+    }
+
+    @Test
+    void shouldNotDeleteShelfWhenBooksAssigned() {
+        service.addShelf(shelf);
+        service.addBook(book);
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.deleteShelf(shelf)
+        );
+    }
+
+    @Test
+    void shouldDeleteAvailableBook() {
+        service.addBook(book);
+
+        service.deleteBook(book);
+
+        assertEquals(0, data.getBooks().size());
+    }
+
+    @Test
+    void shouldNotDeleteBorrowedBook() {
+        service.addBook(book);
+        service.addReader(reader);
+
+        service.borrowBook(book, reader, LocalDate.now().plusDays(14));
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.deleteBook(book)
+        );
+    }
 
 }
